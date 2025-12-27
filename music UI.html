@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Player – English Playlist</title>
+
+<style>
+:root{
+    --bg-main:#0e0f1a;
+    --bg-sidebar:#14162b;
+    --bg-card:#1c1f3d;
+    --bg-hover:#262a55;
+    --player-start:#3a3f8f;
+    --player-end:#0e0f1a;
+    --accent:#6ae3ff;
+    --text-main:#ffffff;
+    --text-muted:#b2b7ff;
+    --progress-bg:#2a2e5a;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    background:var(--bg-main);
+    color:var(--text-main);
+}
+
+/* PLAYLIST */
+.sidebar{
+    width:38%;
+    background:var(--bg-sidebar);
+    padding:25px;
+    overflow-y:auto;
+}
+
+.sidebar h2{
+    text-align:center;
+    margin-bottom:25px;
+    color:var(--accent);
+    letter-spacing:1px;
+}
+
+.song{
+    display:grid;
+    grid-template-columns:60px 1fr;
+    gap:15px;
+    align-items:center;
+    background:var(--bg-card);
+    padding:12px;
+    border-radius:14px;
+    cursor:pointer;
+    margin-bottom:15px;
+    transition:0.3s;
+}
+
+.song:hover{
+    background:var(--bg-hover);
+    transform:translateY(-3px);
+}
+
+.song img{
+    width:60px;
+    height:60px;
+    border-radius:10px;
+    object-fit:cover;
+}
+
+.song-title{
+    font-size:15px;
+    font-weight:600;
+}
+
+.song-artist{
+    font-size:12px;
+    color:var(--text-muted);
+    margin-top:4px;
+}
+
+/* PLAYER */
+.player{
+    width:62%;
+    background:linear-gradient(180deg,var(--player-start),var(--player-end));
+    padding:40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.cover{
+    width:300px;
+    height:300px;
+    border-radius:25px;
+    object-fit:cover;
+    box-shadow:0 25px 60px rgba(106,227,255,0.35);
+}
+
+.details{
+    text-align:center;
+    margin-top:25px;
+}
+
+.details h3{
+    font-size:26px;
+    margin-bottom:8px;
+}
+
+.details p{
+    font-size:14px;
+    color:var(--text-muted);
+}
+
+/* PROGRESS */
+.progress-container{
+    width:75%;
+    height:7px;
+    background:var(--progress-bg);
+    border-radius:10px;
+    margin:25px 0;
+    cursor:pointer;
+}
+
+.progress{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#6ae3ff,#9b7bff);
+    border-radius:10px;
+}
+
+.time{
+    width:75%;
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--text-muted);
+}
+
+/* CONTROLS */
+.controls{
+    display:flex;
+    gap:45px;
+    margin-top:30px;
+    align-items:center;
+}
+
+.controls button{
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-size:30px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.controls button:hover{
+    transform:scale(1.2);
+}
+
+.play{
+    background:linear-gradient(135deg,#6ae3ff,#9b7bff);
+    color:#000;
+    width:75px;
+    height:75px;
+    border-radius:50%;
+    font-size:32px;
+    box-shadow:0 12px 35px rgba(106,227,255,0.6);
+}
+
+audio{display:none;}
+</style>
+</head>
+
+<body>
+
+<!-- PLAYLIST -->
+<div class="sidebar">
+<h2>English Playlist</h2>
+
+<div class="song" onclick="playSong(0)">
+<img src="cover1.png">
+<div>
+<div class="song-title">Blinding Lights</div>
+<div class="song-artist">The Weeknd</div>
+</div>
+</div>
+
+<div class="song" onclick="playSong(1)">
+<img src="cover2.png">
+<div>
+<div class="song-title">Shape of You</div>
+<div class="song-artist">Ed Sheeran</div>
+</div>
+</div>
+
+<div class="song" onclick="playSong(2)">
+<img src="cover3.png">
+<div>
+<div class="song-title">Levitating</div>
+<div class="song-artist">Dua Lipa</div>
+</div>
+</div>
+
+<div class="song" onclick="playSong(3)">
+<img src="cover4.png">
+<div>
+<div class="song-title">Believer</div>
+<div class="song-artist">Imagine Dragons</div>
+</div>
+</div>
+
+<div class="song" onclick="playSong(4)">
+<img src="cover5.png">
+<div>
+<div class="song-title">Someone You Loved</div>
+<div class="song-artist">Lewis Capaldi</div>
+</div>
+</div>
+
+</div>
+
+<!-- PLAYER -->
+<div class="player">
+
+<img id="cover" class="cover" src="cover1.png">
+
+<div class="details">
+<h3 id="title">Blinding Lights</h3>
+<p id="movie">The Weeknd</p>
+</div>
+
+<div class="progress-container" onclick="seek(event)">
+<div class="progress" id="progress"></div>
+</div>
+
+<div class="time">
+<span id="current">0:00</span>
+<span id="duration">0:00</span>
+</div>
+
+<div class="controls">
+<button onclick="prev()">⏮</button>
+<button class="play" onclick="toggle()" id="playBtn">▶</button>
+<button onclick="next()">⏭</button>
+</div>
+
+<audio id="audio"></audio>
+
+</div>
+
+<script>
+const songs = [
+{title:"Blinding Lights", movie:"The Weeknd", file:"song1.mp3", cover:"cover1.png"},
+{title:"Shape of You", movie:"Ed Sheeran", file:"song2.mp3", cover:"cover2.png"},
+{title:"Levitating", movie:"Dua Lipa", file:"song3.mp3", cover:"cover3.png"},
+{title:"Believer", movie:"Imagine Dragons", file:"song4.mp3", cover:"cover4.png"},
+{title:"Someone You Loved", movie:"Lewis Capaldi", file:"song5.mp3", cover:"cover5.png"}
+];
+
+let index=0;
+const audio=document.getElementById("audio");
+const title=document.getElementById("title");
+const movie=document.getElementById("movie");
+const cover=document.getElementById("cover");
+const progress=document.getElementById("progress");
+const playBtn=document.getElementById("playBtn");
+
+function loadSong(i){
+index=i;
+audio.src=songs[i].file;
+title.innerText=songs[i].title;
+movie.innerText=songs[i].movie;
+cover.src=songs[i].cover;
+audio.play();
+playBtn.innerText="⏸";
+}
+
+function playSong(i){loadSong(i);}
+function toggle(){
+if(audio.paused){audio.play();playBtn.innerText="⏸";}
+else{audio.pause();playBtn.innerText="▶";}
+}
+function prev(){loadSong((index-1+songs.length)%songs.length);}
+function next(){loadSong((index+1)%songs.length);}
+
+audio.addEventListener("timeupdate",()=>{
+progress.style.width=(audio.currentTime/audio.duration)*100+"%";
+document.getElementById("current").innerText=format(audio.currentTime);
+document.getElementById("duration").innerText=format(audio.duration);
+});
+
+function seek(e){
+audio.currentTime=(e.offsetX/e.currentTarget.clientWidth)*audio.duration;
+}
+
+function format(t){
+if(isNaN(t)) return "0:00";
+const m=Math.floor(t/60);
+const s=Math.floor(t%60);
+return m+":"+(s<10?"0":"")+s;
+}
+</script>
+
+</body>
+</html>
